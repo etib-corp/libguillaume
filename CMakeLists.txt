@@ -67,7 +67,7 @@ file(GLOB_RECURSE TESTS   ${TESTS_DIRECTORY}/*.cpp)
 # ------------------------------------------------------------------------------
 
 # Main library target
-add_library(guillaume SHARED ${SOURCES})
+add_library(guillaume STATIC ${SOURCES})
 target_link_libraries(guillaume PRIVATE xerces-c)
 target_include_directories(guillaume PUBLIC ${HEADERS_DIRECTORY})
 
