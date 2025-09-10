@@ -4,10 +4,10 @@ cmake_minimum_required(VERSION 3.10)
 # Project Metadata
 # ------------------------------------------------------------------------------
 project(
-    libguillaume
+    guillaume-connector
     VERSION 0.1.0
     DESCRIPTION "Connector for Guillaume, a React-inspired Python XR framework optimized for AR/VR applications."
-    HOMEPAGE_URL "https://github.com/etib-corp/libguillaume"
+    HOMEPAGE_URL "https://github.com/etib-corp/guillaume-connector"
     LANGUAGES CXX
 )
 
@@ -22,6 +22,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Module Imports
 # ------------------------------------------------------------------------------
 include(FetchContent)
+
+include(CTest)
+enable_testing()
 
 # ------------------------------------------------------------------------------
 # Xerces-C Setup
@@ -52,7 +55,7 @@ FetchContent_MakeAvailable(googletest)
 # ------------------------------------------------------------------------------
 set(HEADERS_DIRECTORY ${PROJECT_SOURCE_DIR}/headers)
 set(SOURCES_DIRECTORY ${PROJECT_SOURCE_DIR}/sources)
-set(TESTS_DIRECTORY   ${PROJECT_SOURCE_DIR}/tests)
+set(TESTS_DIRECTORY ${PROJECT_SOURCE_DIR}/tests)
 
 include_directories(${HEADERS_DIRECTORY})
 
@@ -60,18 +63,22 @@ include_directories(${HEADERS_DIRECTORY})
 # Source Files
 # ------------------------------------------------------------------------------
 file(GLOB_RECURSE SOURCES ${SOURCES_DIRECTORY}/*.cpp)
-file(GLOB_RECURSE TESTS   ${TESTS_DIRECTORY}/*.cpp)
+file(GLOB_RECURSE TESTS ${TESTS_DIRECTORY}/*.cpp)
 
 # ------------------------------------------------------------------------------
 # Targets
 # ------------------------------------------------------------------------------
 
 # Main library target
-add_library(guillaume STATIC ${SOURCES})
-target_link_libraries(guillaume PRIVATE xerces-c)
-target_include_directories(guillaume PUBLIC ${HEADERS_DIRECTORY})
+add_library(guillaume-connector STATIC ${SOURCES})
+target_link_libraries(guillaume-connector PRIVATE xerces-c)
+target_include_directories(guillaume-connector PUBLIC ${HEADERS_DIRECTORY})
 
-# Test executable target
-add_executable(test_guillaume ${TESTS})
-target_link_libraries(test_guillaume PRIVATE guillaume)
-target_link_libraries(test_guillaume PRIVATE gtest gtest_main)
+# Test targets
+foreach(test_file ${TESTS})
+    get_filename_component(test_name ${test_file} NAME_WE)
+    add_executable(test_${test_name} ${test_file})
+    target_link_libraries(test_${test_name} PRIVATE guillaume-connector)
+    target_link_libraries(test_${test_name} PRIVATE gtest gtest_main)
+    add_test(NAME ${test_name} COMMAND test_${test_name})
+endforeach()

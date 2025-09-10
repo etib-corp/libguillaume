@@ -6,12 +6,12 @@
 
 namespace guillaume
 {
-    class Guillaume
+    class Connector
     {
     private:
     protected:
     public:
-        Guillaume();
-        ~Guillaume();
+        Connector();
+        ~Connector();
     };
 } // namespace guillaume
